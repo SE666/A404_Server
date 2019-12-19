@@ -7,20 +7,20 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DBUtil {
-	private static String drivatename = null;
+	private static String drivername = null;
 	private static String url = null;
 	private static String username = null;
 	private static String password = null;
 	
 	static {
 		try {
-			drivatename = "com.mysql.jdbc.Driver";
+			drivername = "com.mysql.jdbc.Driver";
 			url = "jdbc:mysql://localhost:3306/a404";
 			username = "root";
 			password = "root";
 			
 			//加载驱动类
-			Class.forName(drivatename);
+			Class.forName(drivername);
 		}/* catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

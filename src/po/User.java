@@ -14,6 +14,7 @@ public class User {
 	private String password; // 登录密码
 	private String phone; // 联系方式
 	private int flag; // 标识
+	
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
