@@ -149,7 +149,7 @@ public class AdminDao {
 		
 		try {
 			preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setInt(1, id);;
+			preparedStatement.setInt(1, id);
 			rSet = preparedStatement.executeQuery();
 			while(rSet.next()){
 				form = new Form();
