@@ -15,6 +15,7 @@ import com.google.gson.Gson;
 import po.Form;
 import po.RoughForm;
 import service.AdminService;
+import vo.FormVo;
 
 /**
  * Servlet implementation class AdminServlet
@@ -78,7 +79,7 @@ public class AdminServlet extends HttpServlet {
     protected void ShowForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String idStr = request.getParameter("formid");
     	int id = Integer.parseInt(idStr);
-    	Form form = adminService.ShowForm(id);
+    	FormVo form = adminService.ShowForm(id);
     	Gson gson = new Gson();
     	String viewToJson = gson.toJson(form);
     	

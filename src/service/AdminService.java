@@ -3,11 +3,14 @@ package service;
 import java.util.ArrayList;
 
 import dao.AdminDao;
+import dao.FormDao;
 import po.Form;
 import po.RoughForm;
+import vo.FormVo;
 
 public class AdminService {
 	AdminDao adminDao = new AdminDao();
+	FormDao formDao = new FormDao();
 	
 	// 判断是否为管理员账号
 	public int IfAccount(String stuid, String password){
@@ -29,8 +32,8 @@ public class AdminService {
 	}
 	
 	// 显示某条申请的详细信息
-	public Form ShowForm(int id){
-		return adminDao.ShowForm(id);
+	public FormVo ShowForm(int id){
+		return formDao.findById(id);
 	}
 	
 	// 修改申请状态

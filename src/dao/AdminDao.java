@@ -5,9 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
 import po.Admin;
-import po.Form;
 import po.RoughForm;
 import util.DBUtil;
 
@@ -137,42 +135,6 @@ public class AdminDao {
 		}
 		
 		return list;
-	}
-	
-	// 根据申请id显示申请详细信息
-	public Form ShowForm(int id){
-		Connection connection = DBUtil.getConn();
-		String sql = "select * from form where id=?";
-		PreparedStatement preparedStatement = null;
-		ResultSet rSet = null;
-		Form form = null;
-		
-		try {
-			preparedStatement = connection.prepareStatement(sql);
-			preparedStatement.setInt(1, id);
-			rSet = preparedStatement.executeQuery();
-			while(rSet.next()){
-				form = new Form();
-				form.setId(rSet.getInt(1));
-				form.setUserid(rSet.getInt(2));
-				form.setApplydate(rSet.getString(3));
-				form.setStart(rSet.getString(4));
-				form.setEnd(rSet.getString(5));
-				form.setPhone(rSet.getString(6));
-				form.setNumber(rSet.getInt(7));
-				form.setIfmedia(rSet.getString(8));
-				form.setReason(rSet.getString(9));
-				form.setName(getName(form.getUserid()));
-			}
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} finally {
-			DBUtil.closeRst(rSet);
-			DBUtil.closePstmt(preparedStatement);
-			DBUtil.closeConn(connection);
-		}
-		
-		return form;
 	}
 	
 	// 修改申请状态
