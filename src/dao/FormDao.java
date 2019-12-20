@@ -168,7 +168,7 @@ public class FormDao {
 				+ "from " 
 				+ "form left join `user` " 
 				+ "on " 
-				+ "form.userid = `user`.id"
+				+ "form.userid = `user`.id "
 				+ "where "
 				+ "status=? ";
 		
@@ -207,9 +207,9 @@ public class FormDao {
 				+ "from " 
 				+ "form left join `user` " 
 				+ "on " 
-				+ "form.userid = `user`.id"
+				+ "form.userid = `user`.id "
 				+ "where "
-				+ "form.id=? ";
+				+ "form.id = ?";
 		
 		PreparedStatement pstmt = null;
 		FormVo formVo = null;
@@ -243,9 +243,9 @@ public class FormDao {
 				+ "from " 
 				+ "form left join `user` " 
 				+ "on " 
-				+ "form.userid = `user`.id"
+				+ "form.userid = `user`.id "
 				+ "where "
-				+ "form.userid=? ";
+				+ "form.userid = ? ";
 		
 		PreparedStatement pstmt = null;
 		FormVo formVo = null;
