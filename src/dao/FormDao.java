@@ -49,7 +49,6 @@ public class FormDao {
 			// 发送SQL语句
 			result = pstmt.executeUpdate();
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			// 关闭
@@ -77,7 +76,6 @@ public class FormDao {
 			result = pstmt.executeUpdate();
 
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			// 关闭
@@ -85,6 +83,41 @@ public class FormDao {
 			DBUtil.closeConn(conn);
 		}
 		return result;
+	}
+	
+	public ArrayList<FormVo> findAll() {
+		Connection conn = DBUtil.getConn();
+		String sql = "select "
+				+ "form.id, user.stuid, user.`name`, user.phone, applydate, `start`, `end`, number, ifmedia, reason, `status`, submitdatetime "
+				+ "from " 
+				+ "form left join `user` " 
+				+ "on " 
+				+ "form.userid = `user`.id "
+				+ "order by applydate, start ";
+		
+		PreparedStatement pstmt = null;
+		FormVo formVo = null;
+		ArrayList<FormVo> formList = new ArrayList<FormVo>();
+		ResultSet rSet = null;
+		try {
+			pstmt = conn.prepareStatement(sql);
+			rSet = pstmt.executeQuery();
+			
+			while (rSet.next()) {
+				formVo = new FormVo(rSet.getInt(1), rSet.getString(2), rSet.getString(3), rSet.getString(4), rSet.getString(5),
+						rSet.getString(6), rSet.getString(7), rSet.getInt(8), rSet.getString(9), rSet.getString(10), rSet.getString(11), rSet.getString(12));
+				
+				formList.add(formVo);
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally {
+			DBUtil.closeRst(rSet);
+			DBUtil.closePstmt(pstmt);
+			DBUtil.closeConn(conn);
+		}
+		return formList;
 	}
 	
 	// 查询所有申请表(根据时间段)
@@ -239,5 +272,24 @@ public class FormDao {
 			DBUtil.closeConn(conn);
 		}
 		return formList;
+	}
+	
+	public int updateStatus(int formid, String status){
+		Connection connection = DBUtil.getConn();
+		String sql = "update form set status=? where id=?";
+		PreparedStatement preparedStatement = null;
+		int result = 0;
+		try {
+			preparedStatement = connection.prepareStatement(sql);
+			preparedStatement.setString(1, status);
+			preparedStatement.setInt(2, formid);
+			result = preparedStatement.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} finally{
+			DBUtil.closePstmt(preparedStatement);
+			DBUtil.closeConn(connection);
+		}
+		return result;
 	}
 }

@@ -38,6 +38,10 @@ public class FormService {
 		return formDao.findAll(date1, date2);
 	}
 	
+	public ArrayList<FormVo> findAll() {
+		return formDao.findAll();
+	}
+	
 	// 根据申请表审核状态查询所有
 	public ArrayList<FormVo> findByStatus(String status) {
 		return formDao.findByStatus(status);
@@ -60,7 +64,7 @@ public class FormService {
 		String[][] timeTable = new String[7][30]; // 时刻表（empty\wait\occupied）
 		for(int i = 0; i < 7; i++)
 			for(int j = 0; j < 30; j++)
-				timeTable[i][j] = "empty";
+				timeTable[i][j] = "";
 		
 		for (FormVo formVo : fromList) {
 			// System.out.println(formVo.toString());
@@ -86,6 +90,10 @@ public class FormService {
 				timeTable[i][j] = status;
 		}
 		return timeTable;
+	}
+	
+	public int changeStatus(int id, String status) {
+		return formDao.updateStatus(id, status);
 	}
 
 }

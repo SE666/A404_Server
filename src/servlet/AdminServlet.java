@@ -12,9 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.google.gson.Gson;
 
-import po.Form;
-import po.RoughForm;
-import service.AdminService;
+import po.User;
+import service.FormService;
+import service.UserService;
 import vo.FormVo;
 
 /**
@@ -23,7 +23,8 @@ import vo.FormVo;
 @WebServlet("/AdminServlet")
 public class AdminServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-	private AdminService adminService = new AdminService();
+	private FormService formService = new FormService();
+	private UserService userService = new UserService();
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -35,58 +36,61 @@ public class AdminServlet extends HttpServlet {
     
     // 管理员登录
     protected void Login(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-//    	String stuid = request.getParameter("stuid");
-//    	String password = request.getParameter("password");
-    	String stuid = "0";
-    	String password = "123";
-    	int flag = adminService.IfAccount(stuid, password);
-    	Gson gson = new Gson();
-    	String viewToJson = gson.toJson(flag);
-    	System.out.println(viewToJson);
-    	
+    	String stuid = request.getParameter("stuid");
+    	String password = request.getParameter("password");
+    	User user = userService.login(stuid, password);
+    	int flag = user == null ? 0 : user.getFlag();
     	//返回请求
     	PrintWriter out = response.getWriter();
-    	out.write(viewToJson);
+    	if(flag == 1) {
+    		out.println(new Gson().toJson(user));
+    	} else {
+    		out.println("failed");
+    	}
     	out.flush();
+    	out.close();
     }
     
     // 显示所有申请
     protected void ShowAll(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-    	ArrayList<RoughForm> list = adminService.ShowAll();
+    	ArrayList<FormVo> list = formService.findAll();
     	Gson gson = new Gson();
-    	String viewToJson = gson.toJson(list);
+    	String json = gson.toJson(list);
 
     	//返回请求
     	PrintWriter out = response.getWriter();
-    	out.write(viewToJson);
+    	out.write(json);
     	out.flush();
+    	out.close();
     }
     
     // 根据条件显示申请
     protected void ShowInfo(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String status = request.getParameter("status");
-    	ArrayList<RoughForm> list = adminService.ShowInfo(status);
+    	ArrayList<FormVo> list = formService.findByStatus(status);
     	Gson gson = new Gson();
-    	String viewToJson = gson.toJson(list);
+    	String json = gson.toJson(list);
     	
     	//返回请求
     	PrintWriter out = response.getWriter();
-    	out.write(viewToJson);
+    	out.write(json);
     	out.flush();
+    	out.close();
     }
     
     // 显示某个申请的详细信息
     protected void ShowForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String idStr = request.getParameter("formid");
     	int id = Integer.parseInt(idStr);
-    	FormVo form = adminService.ShowForm(id);
+    	FormVo form = formService.findById(id);
     	Gson gson = new Gson();
-    	String viewToJson = gson.toJson(form);
+    	String json = gson.toJson(form);
     	
     	//返回请求
     	PrintWriter out = response.getWriter();
-    	out.write(viewToJson);
+    	out.write(json);
     	out.flush();
+    	out.close();
     }
     
     // 修改申请状态
@@ -94,13 +98,13 @@ public class AdminServlet extends HttpServlet {
     	String idStr = request.getParameter("formid");
     	int id = Integer.parseInt(idStr);
     	String status = request.getParameter("status");
-    	String result = adminService.ChangeStatus(id, status);
+    	int result = formService.changeStatus(id, status);
     	Gson gson = new Gson();
-    	String viewToJson = gson.toJson(result);
+    	String json = gson.toJson(result);
     	
     	//返回请求
     	PrintWriter out = response.getWriter();
-    	out.write(viewToJson);
+    	out.write(json);
     	out.flush();
     }
 
