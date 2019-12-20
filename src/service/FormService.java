@@ -4,6 +4,10 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.google.gson.Gson;
 
 import dao.FormDao;
 import po.Form;
@@ -60,34 +64,44 @@ public class FormService {
 	// 生成时间选择页
 	@SuppressWarnings("deprecation")
 	public String[][] createTimetable(String date1, String date2) {
-		ArrayList<FormVo> fromList = formDao.findAll(date1, date2);
+		ArrayList<FormVo> formList = formDao.findAll(date1, date2);
+		System.out.println(new Gson().toJson(formList));
 		String[][] timeTable = new String[7][30]; // 时刻表（empty\wait\occupied）
-		for(int i = 0; i < 7; i++)
-			for(int j = 0; j < 30; j++)
+		for(int i = 0; i < 7; i++) {
+			for(int j = 0; j < 30; j++) {
 				timeTable[i][j] = "";
+			}
+		}
 		
-		for (FormVo formVo : fromList) {
-			// System.out.println(formVo.toString());
-			int i = 0;
-			SimpleDateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
+		Map<String, String> map = new HashMap<String, String>();
+		map.put("待审核", "occupied");
+		map.put("审核通过", "confirmed");
+		map.put("未通过", "");
+		
+		
+		for (FormVo formVo : formList) {
+			int day = 0;  //表示星期
+			SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			try {
-				Date date = dateFormat1.parse(formVo.getApplydate());
-				i = date.getDay() == 0 ? 6 : date.getDay() - 1; // 星期几
+				Date date = dateFormat.parse(formVo.getApplydate());
+				day = date.getDay() == 0 ? 6 : date.getDay() - 1; // 星期几
 				
 			} catch (ParseException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			
 			String[] start_array = formVo.getStart().split(":"); // 开始时间
 			int start = (Integer.parseInt(start_array[0]) - 8) * 2;
 			start = (Integer.parseInt(start_array[1]) == 0) ? start : (start + 1);
 			String[] end_array = formVo.getEnd().split(":"); // 结束时间
 			int end = (Integer.parseInt(end_array[0]) - 8) * 2;
 			end = (Integer.parseInt(end_array[1]) == 0) ? end : (end + 1);
-			// System.out.println(start + " " + end);
+			
 			String status = formVo.getStatus();
-			for(int j = start; j < end; j++)
-				timeTable[i][j] = status;
+			for(int j = start; j < end; j++) {
+				timeTable[day][j] = map.get(status);
+			}
+			timeTable[day][end-1] += " last";
 		}
 		return timeTable;
 	}
@@ -95,5 +109,4 @@ public class FormService {
 	public int changeStatus(int id, String status) {
 		return formDao.updateStatus(id, status);
 	}
-
 }
